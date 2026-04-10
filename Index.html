@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>GTA 5 Mission Tracker</title>
+
+  <style>
+    body {
+      margin: 0;
+      background: url('https://i.imgur.com/3ZQ3Z8F.jpg') no-repeat center center fixed;
+      background-size: cover;
+      font-family: Arial, sans-serif;
+      color: white;
+    }
+
+    .overlay {
+      background: rgba(0,0,0,0.75);
+      min-height: 100vh;
+      padding: 20px;
+    }
+
+    h1 {
+      margin-top: 0;
+      font-size: 32px;
+      letter-spacing: 2px;
+    }
+
+    h2 {
+      border-left: 4px solid #00ff88;
+      padding-left: 10px;
+      margin-top: 25px;
+    }
+
+    .counter {
+      color: #00ff88;
+      margin-bottom: 10px;
+      font-size: 14px;
+    }
+
+    label {
+      display: block;
+      padding: 6px;
+      margin: 2px 0;
+      background: rgba(255,255,255,0.05);
+      border-radius: 4px;
+      transition: 0.2s;
+    }
+
+    label:hover {
+      background: rgba(0,255,136,0.15);
+      transform: translateX(4px);
+    }
+
+    input[type="checkbox"] {
+      transform: scale(1.2);
+      margin-right: 10px;
+    }
+  </style>
+</head>
+
+<body>
+<div class="overlay">
+
+<h1>MISSION TRACKER</h1>
+
+<h2>Story Missions</h2>
+<div class="counter" id="storyCounter"></div>
+
+<label><input type="checkbox" id="prologue" onchange="saveData()"> 1. Prologue</label>
+<label><input type="checkbox" id="franklin_lamar" onchange="saveData()"> 2. Franklin and Lamar</label>
+<label><input type="checkbox" id="repossession" onchange="saveData()"> 3. Repossession</label>
+<label><input type="checkbox" id="complications" onchange="saveData()"> 4. Complications</label>
+<label><input type="checkbox" id="father_son" onchange="saveData()"> 5. Father/Son</label>
+<label><input type="checkbox" id="marriage_counseling" onchange="saveData()"> 6. Marriage Counseling</label>
+<label><input type="checkbox" id="chop" onchange="saveData()"> 7. Chop</label>
+<label><input type="checkbox" id="friend_request" onchange="saveData()"> 8. Friend Request</label>
+<label><input type="checkbox" id="jewel_setup" onchange="saveData()"> 9. Casing the Jewel Store</label>
+<label><input type="checkbox" id="jewel_heist" onchange="saveData()"> 10. The Jewel Store Job</label>
+<label><input type="checkbox" id="mr_phillips" onchange="saveData()"> 11. Mr. Phillips</label>
+<label><input type="checkbox" id="trevor_industries" onchange="saveData()"> 12. Trevor Philips Industries</label>
+<label><input type="checkbox" id="nervous_ron" onchange="saveData()"> 13. Nervous Ron</label>
+<label><input type="checkbox" id="crystal_maze" onchange="saveData()"> 14. Crystal Maze</label>
+<label><input type="checkbox" id="friends_reunited" onchange="saveData()"> 15. Friends Reunited</label>
+<label><input type="checkbox" id="fame_or_shame" onchange="saveData()"> 16. Fame or Shame</label>
+<label><input type="checkbox" id="dead_man_walking" onchange="saveData()"> 17. Dead Man Walking</label>
+<label><input type="checkbox" id="threes_company" onchange="saveData()"> 18. Three’s Company</label>
+<label><input type="checkbox" id="by_the_book" onchange="saveData()"> 19. By the Book</label>
+<label><input type="checkbox" id="blitz_play" onchange="saveData()"> 20. Blitz Play</label>
+<label><input type="checkbox" id="paleto_score" onchange="saveData()"> 21. The Paleto Score</label>
+<label><input type="checkbox" id="minor_turbulence" onchange="saveData()"> 22. Minor Turbulence</label>
+<label><input type="checkbox" id="paleto_setup" onchange="saveData()"> 23. Paleto Score Setup</label>
+<label><input type="checkbox" id="derailed" onchange="saveData()"> 24. Derailed</label>
+<label><input type="checkbox" id="fresh_meat" onchange="saveData()"> 25. Fresh Meat</label>
+<label><input type="checkbox" id="bureau_cleanup" onchange="saveData()"> 26. Cleaning Out the Bureau</label>
+<label><input type="checkbox" id="bureau_raid" onchange="saveData()"> 27. The Bureau Raid</label>
+<label><input type="checkbox" id="wrap_up" onchange="saveData()"> 28. The Wrap Up</label>
+<label><input type="checkbox" id="lamar_down" onchange="saveData()"> 29. Lamar Down</label>
+<label><input type="checkbox" id="third_way" onchange="saveData()"> 30. The Third Way</label>
+
+<h2>Strangers & Freaks</h2>
+<div class="counter" id="sfCounter"></div>
+
+<label><input type="checkbox" id="tonya_1" onchange="saveData()"> 1. Tonya - Pulling Favors</label>
+<label><input type="checkbox" id="tonya_2" onchange="saveData()"> 2. Tonya - Another Favor</label>
+<label><input type="checkbox" id="tonya_3" onchange="saveData()"> 3. Tonya - Still Pulling</label>
+<label><input type="checkbox" id="tonya_4" onchange="saveData()"> 4. Tonya - Last Favor</label>
+
+<label><input type="checkbox" id="beverly_1" onchange="saveData()"> 5. Beverly - Paparazzo</label>
+<label><input type="checkbox" id="beverly_2" onchange="saveData()"> 6. Beverly - Sex Tape</label>
+<label><input type="checkbox" id="beverly_3" onchange="saveData()"> 7. Beverly - Partnership</label>
+<label><input type="checkbox" id="beverly_4" onchange="saveData()"> 8. Beverly - Reality Check</label>
+<label><input type="checkbox" id="beverly_5" onchange="saveData()"> 9. Beverly - Meltdown</label>
+
+<label><input type="checkbox" id="dom_1" onchange="saveData()"> 10. Dom - Risk Assessment</label>
+<label><input type="checkbox" id="dom_2" onchange="saveData()"> 11. Dom - Liquidity Risk</label>
+<label><input type="checkbox" id="dom_3" onchange="saveData()"> 12. Dom - Targeted Risk</label>
+<label><input type="checkbox" id="dom_4" onchange="saveData()"> 13. Dom - Uncalculated Risk</label>
+
+<label><input type="checkbox" id="maryann" onchange="saveData()"> 14. Mary-Ann Challenges</label>
+<label><input type="checkbox" id="hao" onchange="saveData()"> 15. Hao Street Races</label>
+<label><input type="checkbox" id="maude" onchange="saveData()"> 16. Maude Bail Bonds</label>
+<label><input type="checkbox" id="nigel" onchange="saveData()"> 17. Nigel & Mrs Thornhill</label>
+<label><input type="checkbox" id="omega" onchange="saveData()"> 18. Omega Spaceship Parts</label>
+<label><input type="checkbox" id="abigail" onchange="saveData()"> 19. Abigail Submarine Parts</label>
+
+</div>
+
+<script>
+  const checkboxes = document.querySelectorAll("input[type='checkbox']");
+
+  function updateCounters() {
+    const story = document.querySelectorAll("h2 + .counter")[0];
+    const sf = document.querySelectorAll("h2 + .counter")[1];
+
+    const storyBoxes = [...checkboxes].slice(0, 30);
+    const sfBoxes = [...checkboxes].slice(30);
+
+    const storyDone = storyBoxes.filter(cb => cb.checked).length;
+    const sfDone = sfBoxes.filter(cb => cb.checked).length;
+
+    story.textContent = `Story Missions: ${storyDone} / 30`;
+    sf.textContent = `Strangers & Freaks: ${sfDone} / ${sfBoxes.length}`;
+  }
+
+  function saveData() {
+    const data = {};
+    checkboxes.forEach(cb => data[cb.id] = cb.checked);
+    localStorage.setItem("missions", JSON.stringify(data));
+    updateCounters();
+  }
+
+  function loadData() {
+    const saved = JSON.parse(localStorage.getItem("missions"));
+    if (!saved) return;
+
+    checkboxes.forEach(cb => {
+      if (saved[cb.id] !== undefined) cb.checked = saved[cb.id];
+    });
+
+    updateCounters();
+  }
+
+  loadData();
+</script>
+
+</body>
+</html>
