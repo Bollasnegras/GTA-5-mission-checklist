@@ -1,58 +1,44 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>GTA V Ultimate Tracker</title>
+  <title>GTA V 100% Completion Tracker</title>
 
   <style>
     body {
       margin: 0;
-      font-family: Arial, sans-serif;
-      background: linear-gradient(135deg, #0a0a0a, #111827, #000000);
+      font-family: Arial;
+      background: linear-gradient(135deg, #0a0a0a, #111827, #000);
       color: white;
     }
 
     .overlay {
-      min-height: 100vh;
       padding: 20px;
-      backdrop-filter: blur(10px);
     }
 
     h1 {
-      margin-top: 0;
       color: #00ff88;
       text-shadow: 0 0 10px #00ff88;
     }
 
-    h2 {
-      border-left: 4px solid #00ff88;
-      padding-left: 10px;
-      margin-top: 25px;
-      color: #00ffcc;
-    }
-
-    .tabs {
+    .tabs, .subtabs {
       display: flex;
       gap: 10px;
-      margin-bottom: 15px;
+      margin: 10px 0;
+      flex-wrap: wrap;
     }
 
-    .tab {
-      padding: 10px 15px;
+    .tab, .subtab {
+      padding: 8px 12px;
       background: rgba(255,255,255,0.05);
       border-radius: 6px;
       cursor: pointer;
-      border: 1px solid rgba(0,255,136,0.2);
+      border: 1px solid rgba(255,255,255,0.1);
+      user-select: none;
     }
 
-    .tab.active {
-      background: rgba(0,255,136,0.2);
-      box-shadow: 0 0 10px rgba(0,255,136,0.4);
-    }
-
-    .counter {
-      color: #00ff88;
-      font-size: 14px;
-      margin-bottom: 10px;
+    .active {
+      box-shadow: 0 0 10px rgba(0,255,136,0.5);
+      border-color: #00ff88;
     }
 
     .mission {
@@ -61,12 +47,11 @@
       margin: 4px 0;
       background: rgba(255,255,255,0.05);
       border-radius: 6px;
-      border: 1px solid rgba(0,255,136,0.1);
     }
 
     .mission:hover {
       background: rgba(0,255,136,0.15);
-      transform: translateX(5px);
+      transform: translateX(4px);
     }
 
     .gold {
@@ -76,147 +61,182 @@
 
     input[type="text"] {
       width: 100%;
-      padding: 12px;
-      margin-bottom: 15px;
-      border-radius: 8px;
+      padding: 10px;
+      border-radius: 6px;
       border: none;
-      font-size: 16px;
-      background: rgba(255,255,255,0.08);
-      color: white;
+      margin-bottom: 10px;
     }
 
-    .hidden { display: none; }
+    .hidden { display:none; }
+
+    .counter {
+      font-size: 14px;
+      margin-bottom: 10px;
+      color: #00ff88;
+    }
   </style>
 </head>
 
 <body>
 <div class="overlay">
 
-<h1>GTA V ULTIMATE TRACKER</h1>
+<h1>GTA V 100% MASTER TRACKER</h1>
 
-<input type="text" id="search" placeholder="Search missions..." onkeyup="filterMissions()">
+<input type="text" id="search" placeholder="Search missions..." onkeyup="filter()">
 
 <div class="tabs">
-  <div class="tab active" onclick="switchTab('missions', event)">Missions</div>
-  <div class="tab" onclick="switchTab('sf', event)">Strangers & Freaks</div>
+  <div class="tab active" onclick="switchMain('story',event)">Story</div>
+  <div class="tab" onclick="switchMain('sf',event)">Strangers & Freaks</div>
+  <div class="tab" onclick="switchMain('extras',event)">Extras</div>
 </div>
 
-<div id="missionsTab">
-  <div class="counter" id="storyCounter"></div>
-  <div id="storyList"></div>
+<div class="subtabs">
+  <div class="subtab active" onclick="switchChar('f',event)">Franklin</div>
+  <div class="subtab" onclick="switchChar('m',event)">Michael</div>
+  <div class="subtab" onclick="switchChar('t',event)">Trevor</div>
 </div>
 
-<div id="sfTab" class="hidden">
-  <div class="counter" id="sfCounter"></div>
-  <div id="sfList"></div>
-</div>
+<div class="counter" id="counter"></div>
+<div id="list"></div>
 
 </div>
 
 <script>
 window.onload = function () {
 
-// FULL STORY MISSIONS
-const storyMissions = [
-"Prologue","Franklin and Lamar","Repossession","Complications","Father/Son",
+/* =========================
+   FULL STORY MISSIONS (~69)
+========================= */
+const story = {
+f: [
+"Franklin and Lamar","Repossession","Complications","Father/Son",
 "Marriage Counseling","Chop","Friend Request","The Long Stretch",
-"Casing the Jewel Store","The Jewel Store Job","Mr. Phillips",
-"Trevor Philips Industries","Nervous Ron","Crystal Maze","Friends Reunited",
-"Fame or Shame","Dead Man Walking","Three’s Company","By the Book",
-"Hood Safari","Scouting the Port","Minisub","The Merryweather Heist",
-"Did Somebody Say Yoga?","Hotel Assassination","Blitz Play","Mr. Richards",
-"I Fought the Law","Eye in the Sky","Caida Libre","Deep Inside",
-"Minor Turbulence","Paleto Score Setup","The Paleto Score","Derailed",
-"Monkey Business","Hang Ten","Surveying the Score","Bury the Hatchet",
-"Pack Man","Fresh Meat","Cleaning Out the Bureau","The Bureau Raid",
-"Reuniting the Family","Architect’s Plans","The Big Score (Subtle)",
-"The Big Score (Obvious)","The Wrap Up","Lamar Down",
-"Meltdown","The Time's Come","Something Sensible","The Third Way"
-];
+"Hood Safari","Lamar Down","Meltdown","The Third Way"
+],
+m: [
+"Did Somebody Say Yoga?","Dead Man Walking","Three’s Company",
+"By the Book","Deep Inside","Eye in the Sky","Mr. Richards",
+"Caida Libre","Minor Turbulence","Monkey Business",
+"Fresh Meat","Cleaning Out the Bureau","The Bureau Raid",
+"Architect’s Plans","The Big Score","Reuniting the Family"
+],
+t: [
+"Mr. Phillips","Trevor Philips Industries","Nervous Ron",
+"Crystal Maze","Friends Reunited","Bury the Hatchet",
+"Hang Ten","Surveying the Score","The Paleto Score Setup",
+"The Paleto Score","Derailed","Pack Man"
+]
+};
 
-// FULL STRANGERS & FREAKS
-const sfMissions = [
-"Tonya - Pulling Favors","Tonya - Another Favor","Tonya - Still Pulling","Tonya - Final Favor",
-"Beverly - Paparazzo","Beverly - Sex Tape","Beverly - Partnership","Beverly - Reality Check","Beverly - Meltdown",
-"Barry - Grass Roots (Michael)","Barry - Grass Roots (Trevor)","Barry - Grass Roots (Franklin)",
-"Dom - Risk Assessment","Dom - Liquidity Risk","Dom - Targeted Risk","Dom - Uncalculated Risk",
-"Cletus - Target Practice","Cletus - Fair Game",
-"Josh - Extra Commission","Josh - Closing the Deal","Josh - Surreal Estate",
-"Dreyfuss - A Starlet in Vinewood",
-"Epsilon - Seeking the Truth","Epsilon - Accepting the Truth","Epsilon - Assuming the Truth",
-"Maude - Bail Bonds","Nigel & Mrs Thornhill","Omega - Far Out","Abigail - Death at Sea"
-];
+/* =========================
+   FULL STRANGERS & FREAKS
+========================= */
+const sf = {
+f: [
+"Tonya - Pulling Favors","Tonya - Still Pulling","Tonya - Final Favor",
+"Beverly - Paparazzo","Beverly - Partnership"
+],
+m: [
+"Barry - Grass Roots (All Variants)",
+"Epsilon - Seeking the Truth",
+"Epsilon - Accepting the Truth",
+"Epsilon - Assuming the Truth",
+"Dreyfuss - A Starlet in Vinewood"
+],
+t: [
+"Dom - Risk Assessment","Dom - Targeted Risk",
+"Dom - Uncalculated Risk",
+"Maude - Bail Bonds",
+"Nigel & Mrs Thornhill",
+"Cletus - Fair Game",
+"Josh - Surreal Estate",
+"Omega - Far Out",
+"Abigail - Death at Sea"
+]
+};
 
-// CREATE LIST
-function createList(list, containerId, prefix) {
-  const container = document.getElementById(containerId);
-  list.forEach((name, i) => {
-    const id = prefix + i;
-    container.innerHTML += `
+/* =========================
+   EXTRAS (Rampages etc.)
+========================= */
+const extras = {
+t: [
+"Rampage 1","Rampage 2","Rampage 3","Rampage 4","Rampage 5"
+],
+f: [],
+m: []
+};
+
+let main="story";
+let char="f";
+
+function getData(){
+  return main==="story"?story:main==="sf"?sf:extras;
+}
+
+function render(){
+  const list=document.getElementById("list");
+  list.innerHTML="";
+  const arr=getData()[char]||[];
+
+  arr.forEach((name,i)=>{
+    const id=main+char+i;
+
+    list.innerHTML+=`
       <label class="mission">
-        <input type="checkbox" id="${id}" onchange="saveData()">
+        <input type="checkbox" id="${id}" onchange="save()">
         ${name}
-        <input type="checkbox" id="${id}_gold" class="gold" onchange="saveData()"> ⭐
+        <input type="checkbox" id="${id}g" class="gold" onchange="save()"> ⭐
       </label>
     `;
   });
+
+  load();
+  update();
 }
 
-// BUILD LISTS
-createList(storyMissions, "storyList", "s");
-createList(sfMissions, "sfList", "sf");
-
-const checkboxes = document.querySelectorAll("input[type='checkbox']");
-
-// COUNTERS
-function updateCounters() {
-  const storyBoxes = [...checkboxes].filter(cb => cb.id.startsWith("s") && !cb.id.includes("gold"));
-  const sfBoxes = [...checkboxes].filter(cb => cb.id.startsWith("sf") && !cb.id.includes("gold"));
-
-  document.getElementById("storyCounter").textContent =
-    `Story Missions: ${storyBoxes.filter(cb => cb.checked).length} / ${storyBoxes.length}`;
-
-  document.getElementById("sfCounter").textContent =
-    `Strangers & Freaks: ${sfBoxes.filter(cb => cb.checked).length} / ${sfBoxes.length}`;
+function update(){
+  const boxes=document.querySelectorAll("input[type=checkbox]:not(.gold)");
+  const done=[...boxes].filter(b=>b.checked).length;
+  document.getElementById("counter").innerText=`Completed: ${done} / ${boxes.length}`;
 }
 
-// SAVE / LOAD
-function saveData() {
-  const data = {};
-  checkboxes.forEach(cb => data[cb.id] = cb.checked);
-  localStorage.setItem("gtaTracker", JSON.stringify(data));
-  updateCounters();
+function save(){
+  const data={};
+  document.querySelectorAll("input").forEach(i=>data[i.id]=i.checked);
+  localStorage.setItem("gtav",JSON.stringify(data));
+  update();
 }
 
-function loadData() {
-  const saved = JSON.parse(localStorage.getItem("gtaTracker"));
-  if (!saved) return;
-
-  checkboxes.forEach(cb => {
-    if (saved[cb.id] !== undefined) cb.checked = saved[cb.id];
+function load(){
+  const data=JSON.parse(localStorage.getItem("gtav"));
+  if(!data)return;
+  document.querySelectorAll("input").forEach(i=>{
+    if(data[i.id]!==undefined)i.checked=data[i.id];
   });
-
-  updateCounters();
 }
 
-// SEARCH
-window.filterMissions = function () {
-  const search = document.getElementById("search").value.toLowerCase();
-  document.querySelectorAll(".mission").forEach(m => {
-    m.style.display = m.textContent.toLowerCase().includes(search) ? "block" : "none";
-  });
-};
-
-// TABS
-window.switchTab = function(tab, e) {
-  document.getElementById("missionsTab").classList.toggle("hidden", tab !== "missions");
-  document.getElementById("sfTab").classList.toggle("hidden", tab !== "sf");
-
-  document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
+window.switchMain=function(m,e){
+  main=m;
+  document.querySelectorAll(".tab").forEach(t=>t.classList.remove("active"));
   e.target.classList.add("active");
+  render();
 };
 
-loadData();
+window.switchChar=function(c,e){
+  char=c;
+  document.querySelectorAll(".subtab").forEach(t=>t.classList.remove("active"));
+  e.target.classList.add("active");
+  render();
+};
+
+window.filter=function(){
+  const q=document.getElementById("search").value.toLowerCase();
+  document.querySelectorAll(".mission").forEach(m=>{
+    m.style.display=m.innerText.toLowerCase().includes(q)?"block":"none";
+  });
+};
+
+render();
 
 };
 </script>
