@@ -1,244 +1,167 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>GTA V 100% Completion Tracker</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GTA V Checklist</title>
+    <style>
+        :root {
+            --franklin: #43A047;
+            --michael: #2196F3;
+            --trevor: #FF9800;
+            --heist: #607D8B;
+            --bg: #1a1a1a;
+            --card-bg: #2a2a2a;
+            --text: #eeeeee;
+        }
 
-  <style>
-    body {
-      margin: 0;
-      font-family: Arial;
-      background: linear-gradient(135deg, #0a0a0a, #111827, #000);
-      color: white;
-    }
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            margin: 0;
+            padding: 20px;
+            line-height: 1.6;
+        }
 
-    .overlay {
-      padding: 20px;
-    }
+        .container { max-width: 900px; margin: 0 auto; }
 
-    h1 {
-      color: #00ff88;
-      text-shadow: 0 0 10px #00ff88;
-    }
+        header { text-align: center; border-bottom: 2px solid #444; padding-bottom: 20px; margin-bottom: 20px; }
 
-    .tabs, .subtabs {
-      display: flex;
-      gap: 10px;
-      margin: 10px 0;
-      flex-wrap: wrap;
-    }
+        /* Main Tabs */
+        .main-tabs { display: flex; justify-content: center; gap: 10px; margin-bottom: 20px; }
+        .tab-btn {
+            padding: 12px 24px;
+            border: none;
+            background: #444;
+            color: white;
+            cursor: pointer;
+            font-weight: bold;
+            border-radius: 4px;
+            text-transform: uppercase;
+        }
+        .tab-btn.active { background: #fff; color: #000; }
 
-    .tab, .subtab {
-      padding: 8px 12px;
-      background: rgba(255,255,255,0.05);
-      border-radius: 6px;
-      cursor: pointer;
-      border: 1px solid rgba(255,255,255,0.1);
-      user-select: none;
-    }
+        /* Subtabs */
+        .sub-tabs { display: flex; flex-wrap: wrap; justify-content: center; gap: 5px; margin-bottom: 20px; }
+        .sub-btn {
+            padding: 8px 16px;
+            border: none;
+            color: white;
+            cursor: pointer;
+            font-size: 0.9rem;
+            border-radius: 4px;
+            opacity: 0.6;
+        }
+        .sub-btn.active { opacity: 1; font-weight: bold; transform: scale(1.05); }
 
-    .active {
-      box-shadow: 0 0 10px rgba(0,255,136,0.5);
-      border-color: #00ff88;
-    }
+        .btn-f { background-color: var(--franklin); }
+        .btn-m { background-color: var(--michael); }
+        .btn-t { background-color: var(--trevor); }
+        .btn-h { background-color: var(--heist); }
 
-    .mission {
-      display: block;
-      padding: 8px;
-      margin: 4px 0;
-      background: rgba(255,255,255,0.05);
-      border-radius: 6px;
-    }
+        /* Content Areas */
+        .content-section { display: none; background: var(--card-bg); padding: 25px; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.5); }
+        .content-section.active { display: block; }
 
-    .mission:hover {
-      background: rgba(0,255,136,0.15);
-      transform: translateX(4px);
-    }
+        h2 { margin-top: 0; border-left: 5px solid; padding-left: 15px; }
+        .f-border { border-color: var(--franklin); }
+        .m-border { border-color: var(--michael); }
+        .t-border { border-color: var(--trevor); }
+        .h-border { border-color: var(--heist); }
 
-    .gold {
-      margin-left: 10px;
-      color: gold;
-    }
-
-    input[type="text"] {
-      width: 100%;
-      padding: 10px;
-      border-radius: 6px;
-      border: none;
-      margin-bottom: 10px;
-    }
-
-    .hidden { display:none; }
-
-    .counter {
-      font-size: 14px;
-      margin-bottom: 10px;
-      color: #00ff88;
-    }
-  </style>
+        p { font-size: 1.1rem; letter-spacing: 0.3px; }
+    </style>
 </head>
-
 <body>
-<div class="overlay">
 
-<h1>GTA V 100% MASTER TRACKER</h1>
+<div class="container">
+    <header>
+        <h1>GTA V PROGRESS TRACKER</h1>
+    </header>
 
-<input type="text" id="search" placeholder="Search missions..." onkeyup="filter()">
+    <div class="main-tabs">
+        <button class="tab-btn active" onclick="showCategory('missions')">Missions</button>
+        <button class="tab-btn" onclick="showCategory('strangers')">Strangers & Freaks</button>
+    </div>
 
-<div class="tabs">
-  <div class="tab active" onclick="switchMain('story',event)">Story</div>
-  <div class="tab" onclick="switchMain('sf',event)">Strangers & Freaks</div>
-  <div class="tab" onclick="switchMain('extras',event)">Extras</div>
-</div>
+    <div id="missions-nav" class="sub-tabs">
+        <button class="sub-btn btn-f active" onclick="showContent('m-franklin')">Franklin</button>
+        <button class="sub-btn btn-m" onclick="showContent('m-michael')">Michael</button>
+        <button class="sub-btn btn-t" onclick="showContent('m-trevor')">Trevor</button>
+        <button class="sub-btn btn-h" onclick="showContent('m-heists')">Heists/Co-op</button>
+    </div>
 
-<div class="subtabs">
-  <div class="subtab active" onclick="switchChar('f',event)">Franklin</div>
-  <div class="subtab" onclick="switchChar('m',event)">Michael</div>
-  <div class="subtab" onclick="switchChar('t',event)">Trevor</div>
-</div>
+    <div id="strangers-nav" class="sub-tabs" style="display:none;">
+        <button class="sub-btn btn-f active" onclick="showContent('s-franklin')">Franklin</button>
+        <button class="sub-btn btn-m" onclick="showContent('s-michael')">Michael</button>
+        <button class="sub-btn btn-t" onclick="showContent('s-trevor')">Trevor</button>
+    </div>
 
-<div class="counter" id="counter"></div>
-<div id="list"></div>
+    <div id="content-container">
+        <div id="m-franklin" class="content-section active">
+            <h2 class="f-border">Franklin: Main Missions</h2>
+            <p>Franklin and Lamar, Repossession, Chop, The Long Stretch, Hotel Assassination, The Multi Target Assassination, The Vice Assassination, The Bus Assassination, The Construction Assassination, and Lamar Down.</p>
+        </div>
+        <div id="m-michael" class="content-section">
+            <h2 class="m-border">Michael: Main Missions</h2>
+            <p>Complications, Father/Son, Marriage Counseling, Daddy's Little Girl, Friend Request, Dead Man Walking, Did Somebody Say Yoga?, Mr. Richards, Caida Libre, Deep Inside, The Ballad of Rocco, Cleaning Out the Bureau, Reuniting the Family, and Meltdown.</p>
+        </div>
+        <div id="m-trevor" class="content-section">
+            <h2 class="t-border">Trevor: Main Missions</h2>
+            <p>Mr. Philips, Trevor Philips Industries, Nervous Ron, Crystal Maze, Friends Reunited, Scouting the Port, Minor Turbulence, Predator, Derailed, and Hang Ten.</p>
+        </div>
+        <div id="m-heists" class="content-section">
+            <h2 class="h-border">Heists & Multi-Character</h2>
+            <p>The Jewel Store Job (Carbine Rifles, Bugstars Equipment, BZ Gas Grenades), Three's Company, By the Book, Hood Safari, The Merryweather Heist (Minisub, Cargobob), Blitz Play (Trash Truck, Tow Truck, Boiler Suits, Masks, Getaway Vehicle), I Fought the Law..., Eye in the Sky, The Paleto Score (Paleto Score Setup, Military Hardware), Monkey Business, Surveying the Score, Bury the Hatchet, Pack Man, Fresh Meat, The Bureau Raid (Architect's Plans, Fire Truck), The Big Score (Driller, Sidetracked, Stingers, Gauntlet), The Wrap Up, and The Finales (Something Sensible, The Time's Come, The Third Way).</p>
+        </div>
 
+        <div id="s-franklin" class="content-section">
+            <h2 class="f-border">Franklin: Strangers & Freaks</h2>
+            <p>Pulling Favors, Pulling Favors Again, Pulling Another Favor, Pulling Favors Favorably, Pulling One Last Favor, Shift Work, Paparazzo, Paparazzo – The Sex Tape, Paparazzo – The Partnership, Paparazzo – The Meltdown, Paparazzo – The Highness, Paparazzo – Reality Check, Starlet in Vinewood, Grass Roots – Franklin, Far Out, The Final Frontier, Risk Assessment, Liquidity Risk, Targeted Risk, Uncalculated Risk, and The Last One.</p>
+        </div>
+        <div id="s-michael" class="content-section">
+            <h2 class="m-border">Michael: Strangers & Freaks</h2>
+            <p>Abigail Mathers: Death at Sea, What Lies Beneath, Grass Roots – Michael, Exercising Demons – Michael, Seeking the Truth, Accepting the Truth, Assuming the Truth, Chasing the Truth, Bearing the Truth, Delivering the Truth, Exercising the Truth, and Unknowing the Truth.</p>
+        </div>
+        <div id="s-trevor" class="content-section">
+            <h2 class="t-border">Trevor: Strangers & Freaks</h2>
+            <p>Target Practice, Fair Game, Grass Roots – Trevor, Exercising Demons – Trevor, Special Bond, Death Wish, Nigel and Mrs. Thornhill, Vinewood Souvenirs (Willie, Tyler, Kerry, Mark, Al Di Napoli, The Last Act), Extra Commission, Closing the Deal, Surreal Estate, Breach of Contract, The Civil Border Patrol, An American Welcome, and Minute Man Blues.</p>
+        </div>
+    </div>
 </div>
 
 <script>
-window.onload = function () {
+    function showCategory(cat) {
+        // Toggle Nav Bar
+        document.getElementById('missions-nav').style.display = (cat === 'missions') ? 'flex' : 'none';
+        document.getElementById('strangers-nav').style.display = (cat === 'strangers') ? 'flex' : 'none';
+        
+        // Toggle Active Tab Style
+        const tabs = document.querySelectorAll('.tab-btn');
+        tabs[0].classList.toggle('active', cat === 'missions');
+        tabs[1].classList.toggle('active', cat === 'strangers');
 
-/* =========================
-   FULL STORY MISSIONS (~69)
-========================= */
-const story = {
-f: [
-"Franklin and Lamar","Repossession","Complications","Father/Son",
-"Marriage Counseling","Chop","Friend Request","The Long Stretch",
-"Hood Safari","Lamar Down","Meltdown","The Third Way"
-],
-m: [
-"Did Somebody Say Yoga?","Dead Man Walking","Three’s Company",
-"By the Book","Deep Inside","Eye in the Sky","Mr. Richards",
-"Caida Libre","Minor Turbulence","Monkey Business",
-"Fresh Meat","Cleaning Out the Bureau","The Bureau Raid",
-"Architect’s Plans","The Big Score","Reuniting the Family"
-],
-t: [
-"Mr. Phillips","Trevor Philips Industries","Nervous Ron",
-"Crystal Maze","Friends Reunited","Bury the Hatchet",
-"Hang Ten","Surveying the Score","The Paleto Score Setup",
-"The Paleto Score","Derailed","Pack Man"
-]
-};
+        // Show first sub-item of that category
+        if(cat === 'missions') showContent('m-franklin');
+        else showContent('s-franklin');
+    }
 
-/* =========================
-   FULL STRANGERS & FREAKS
-========================= */
-const sf = {
-f: [
-"Tonya - Pulling Favors","Tonya - Still Pulling","Tonya - Final Favor",
-"Beverly - Paparazzo","Beverly - Partnership"
-],
-m: [
-"Barry - Grass Roots (All Variants)",
-"Epsilon - Seeking the Truth",
-"Epsilon - Accepting the Truth",
-"Epsilon - Assuming the Truth",
-"Dreyfuss - A Starlet in Vinewood"
-],
-t: [
-"Dom - Risk Assessment","Dom - Targeted Risk",
-"Dom - Uncalculated Risk",
-"Maude - Bail Bonds",
-"Nigel & Mrs Thornhill",
-"Cletus - Fair Game",
-"Josh - Surreal Estate",
-"Omega - Far Out",
-"Abigail - Death at Sea"
-]
-};
+    function showContent(id) {
+        // Hide all sections
+        const sections = document.querySelectorAll('.content-section');
+        sections.forEach(s => s.classList.remove('active'));
+        
+        // Show selected section
+        document.getElementById(id).classList.add('active');
 
-/* =========================
-   EXTRAS (Rampages etc.)
-========================= */
-const extras = {
-t: [
-"Rampage 1","Rampage 2","Rampage 3","Rampage 4","Rampage 5"
-],
-f: [],
-m: []
-};
-
-let main="story";
-let char="f";
-
-function getData(){
-  return main==="story"?story:main==="sf"?sf:extras;
-}
-
-function render(){
-  const list=document.getElementById("list");
-  list.innerHTML="";
-  const arr=getData()[char]||[];
-
-  arr.forEach((name,i)=>{
-    const id=main+char+i;
-
-    list.innerHTML+=`
-      <label class="mission">
-        <input type="checkbox" id="${id}" onchange="save()">
-        ${name}
-        <input type="checkbox" id="${id}g" class="gold" onchange="save()"> ⭐
-      </label>
-    `;
-  });
-
-  load();
-  update();
-}
-
-function update(){
-  const boxes=document.querySelectorAll("input[type=checkbox]:not(.gold)");
-  const done=[...boxes].filter(b=>b.checked).length;
-  document.getElementById("counter").innerText=`Completed: ${done} / ${boxes.length}`;
-}
-
-function save(){
-  const data={};
-  document.querySelectorAll("input").forEach(i=>data[i.id]=i.checked);
-  localStorage.setItem("gtav",JSON.stringify(data));
-  update();
-}
-
-function load(){
-  const data=JSON.parse(localStorage.getItem("gtav"));
-  if(!data)return;
-  document.querySelectorAll("input").forEach(i=>{
-    if(data[i.id]!==undefined)i.checked=data[i.id];
-  });
-}
-
-window.switchMain=function(m,e){
-  main=m;
-  document.querySelectorAll(".tab").forEach(t=>t.classList.remove("active"));
-  e.target.classList.add("active");
-  render();
-};
-
-window.switchChar=function(c,e){
-  char=c;
-  document.querySelectorAll(".subtab").forEach(t=>t.classList.remove("active"));
-  e.target.classList.add("active");
-  render();
-};
-
-window.filter=function(){
-  const q=document.getElementById("search").value.toLowerCase();
-  document.querySelectorAll(".mission").forEach(m=>{
-    m.style.display=m.innerText.toLowerCase().includes(q)?"block":"none";
-  });
-};
-
-render();
-
-};
+        // Update sub-button opacity
+        const subBtns = document.querySelectorAll('.sub-btn');
+        subBtns.forEach(b => {
+            b.classList.remove('active');
+            if(b.getAttribute('onclick').includes(id)) b.classList.add('active');
+        });
+    }
 </script>
 
 </body>
