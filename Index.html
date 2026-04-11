@@ -3,81 +3,102 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GTA V Checklist</title>
+    <title>GTA V 100% Checklist</title>
     <style>
         :root {
             --franklin: #43A047;
             --michael: #2196F3;
             --trevor: #FF9800;
             --heist: #607D8B;
-            --bg: #1a1a1a;
-            --card-bg: #2a2a2a;
-            --text: #eeeeee;
+            --bg: #121212;
+            --card-bg: #1e1e1e;
+            --text: #ffffff;
         }
 
         body {
-            font-family: 'Segoe UI', Arial, sans-serif;
+            font-family: 'Segoe UI', Helvetica, Arial, sans-serif;
             background-color: var(--bg);
             color: var(--text);
             margin: 0;
             padding: 20px;
-            line-height: 1.6;
         }
 
-        .container { max-width: 900px; margin: 0 auto; }
+        .container { max-width: 800px; margin: 0 auto; }
 
-        header { text-align: center; border-bottom: 2px solid #444; padding-bottom: 20px; margin-bottom: 20px; }
+        header { text-align: center; margin-bottom: 30px; }
+        h1 { letter-spacing: 2px; text-transform: uppercase; border-bottom: 3px solid #333; display: inline-block; padding-bottom: 10px; }
 
         /* Main Tabs */
-        .main-tabs { display: flex; justify-content: center; gap: 10px; margin-bottom: 20px; }
+        .main-tabs { display: flex; justify-content: center; gap: 15px; margin-bottom: 25px; }
         .tab-btn {
-            padding: 12px 24px;
+            padding: 15px 30px;
+            border: 2px solid #444;
+            background: transparent;
+            color: white;
+            cursor: pointer;
+            font-weight: bold;
+            border-radius: 5px;
+            transition: 0.3s;
+        }
+        .tab-btn.active { background: white; color: black; border-color: white; }
+
+        /* Subtabs with Character Colors */
+        .sub-tabs { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin-bottom: 25px; }
+        .sub-btn {
+            padding: 10px 20px;
             border: none;
-            background: #444;
             color: white;
             cursor: pointer;
             font-weight: bold;
             border-radius: 4px;
             text-transform: uppercase;
+            opacity: 0.5;
+            transition: 0.2s;
         }
-        .tab-btn.active { background: #fff; color: #000; }
-
-        /* Subtabs */
-        .sub-tabs { display: flex; flex-wrap: wrap; justify-content: center; gap: 5px; margin-bottom: 20px; }
-        .sub-btn {
-            padding: 8px 16px;
-            border: none;
-            color: white;
-            cursor: pointer;
-            font-size: 0.9rem;
-            border-radius: 4px;
-            opacity: 0.6;
-        }
-        .sub-btn.active { opacity: 1; font-weight: bold; transform: scale(1.05); }
+        .sub-btn:hover { opacity: 0.8; }
+        .sub-btn.active { opacity: 1; transform: translateY(-3px); box-shadow: 0 4px 10px rgba(0,0,0,0.5); border: 2px solid white; }
 
         .btn-f { background-color: var(--franklin); }
         .btn-m { background-color: var(--michael); }
         .btn-t { background-color: var(--trevor); }
         .btn-h { background-color: var(--heist); }
 
-        /* Content Areas */
-        .content-section { display: none; background: var(--card-bg); padding: 25px; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.5); }
+        /* Checklist Styling */
+        .content-section { display: none; background: var(--card-bg); padding: 20px; border-radius: 10px; }
         .content-section.active { display: block; }
 
-        h2 { margin-top: 0; border-left: 5px solid; padding-left: 15px; }
-        .f-border { border-color: var(--franklin); }
-        .m-border { border-color: var(--michael); }
-        .t-border { border-color: var(--trevor); }
-        .h-border { border-color: var(--heist); }
+        .checklist-item {
+            display: flex;
+            align-items: center;
+            padding: 12px;
+            border-bottom: 1px solid #333;
+            transition: 0.2s;
+        }
+        .checklist-item:hover { background: #252525; }
+        
+        input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            margin-right: 15px;
+            cursor: pointer;
+            accent-color: #fff;
+        }
 
-        p { font-size: 1.1rem; letter-spacing: 0.3px; }
+        label { cursor: pointer; flex-grow: 1; font-size: 1.05rem; }
+
+        input[type="checkbox"]:checked + label {
+            text-decoration: line-through;
+            color: #777;
+        }
+
+        h2 { margin-top: 0; text-transform: uppercase; font-size: 1.2rem; opacity: 0.9; }
     </style>
 </head>
 <body>
 
 <div class="container">
     <header>
-        <h1>GTA V PROGRESS TRACKER</h1>
+        <h1>GTA V Tracker</h1>
     </header>
 
     <div class="main-tabs">
@@ -89,7 +110,7 @@
         <button class="sub-btn btn-f active" onclick="showContent('m-franklin')">Franklin</button>
         <button class="sub-btn btn-m" onclick="showContent('m-michael')">Michael</button>
         <button class="sub-btn btn-t" onclick="showContent('m-trevor')">Trevor</button>
-        <button class="sub-btn btn-h" onclick="showContent('m-heists')">Heists/Co-op</button>
+        <button class="sub-btn btn-h" onclick="showContent('m-heists')">Heists</button>
     </div>
 
     <div id="strangers-nav" class="sub-tabs" style="display:none;">
@@ -100,68 +121,83 @@
 
     <div id="content-container">
         <div id="m-franklin" class="content-section active">
-            <h2 class="f-border">Franklin: Main Missions</h2>
-            <p>Franklin and Lamar, Repossession, Chop, The Long Stretch, Hotel Assassination, The Multi Target Assassination, The Vice Assassination, The Bus Assassination, The Construction Assassination, and Lamar Down.</p>
+            <h2>Franklin Missions</h2>
+            <div id="list-m-f"></div>
         </div>
         <div id="m-michael" class="content-section">
-            <h2 class="m-border">Michael: Main Missions</h2>
-            <p>Complications, Father/Son, Marriage Counseling, Daddy's Little Girl, Friend Request, Dead Man Walking, Did Somebody Say Yoga?, Mr. Richards, Caida Libre, Deep Inside, The Ballad of Rocco, Cleaning Out the Bureau, Reuniting the Family, and Meltdown.</p>
+            <h2>Michael Missions</h2>
+            <div id="list-m-m"></div>
         </div>
         <div id="m-trevor" class="content-section">
-            <h2 class="t-border">Trevor: Main Missions</h2>
-            <p>Mr. Philips, Trevor Philips Industries, Nervous Ron, Crystal Maze, Friends Reunited, Scouting the Port, Minor Turbulence, Predator, Derailed, and Hang Ten.</p>
+            <h2>Trevor Missions</h2>
+            <div id="list-m-t"></div>
         </div>
         <div id="m-heists" class="content-section">
-            <h2 class="h-border">Heists & Multi-Character</h2>
-            <p>The Jewel Store Job (Carbine Rifles, Bugstars Equipment, BZ Gas Grenades), Three's Company, By the Book, Hood Safari, The Merryweather Heist (Minisub, Cargobob), Blitz Play (Trash Truck, Tow Truck, Boiler Suits, Masks, Getaway Vehicle), I Fought the Law..., Eye in the Sky, The Paleto Score (Paleto Score Setup, Military Hardware), Monkey Business, Surveying the Score, Bury the Hatchet, Pack Man, Fresh Meat, The Bureau Raid (Architect's Plans, Fire Truck), The Big Score (Driller, Sidetracked, Stingers, Gauntlet), The Wrap Up, and The Finales (Something Sensible, The Time's Come, The Third Way).</p>
+            <h2>Heists & Shared</h2>
+            <div id="list-m-h"></div>
         </div>
 
         <div id="s-franklin" class="content-section">
-            <h2 class="f-border">Franklin: Strangers & Freaks</h2>
-            <p>Pulling Favors, Pulling Favors Again, Pulling Another Favor, Pulling Favors Favorably, Pulling One Last Favor, Shift Work, Paparazzo, Paparazzo – The Sex Tape, Paparazzo – The Partnership, Paparazzo – The Meltdown, Paparazzo – The Highness, Paparazzo – Reality Check, Starlet in Vinewood, Grass Roots – Franklin, Far Out, The Final Frontier, Risk Assessment, Liquidity Risk, Targeted Risk, Uncalculated Risk, and The Last One.</p>
+            <h2>Franklin: Strangers & Freaks</h2>
+            <div id="list-s-f"></div>
         </div>
         <div id="s-michael" class="content-section">
-            <h2 class="m-border">Michael: Strangers & Freaks</h2>
-            <p>Abigail Mathers: Death at Sea, What Lies Beneath, Grass Roots – Michael, Exercising Demons – Michael, Seeking the Truth, Accepting the Truth, Assuming the Truth, Chasing the Truth, Bearing the Truth, Delivering the Truth, Exercising the Truth, and Unknowing the Truth.</p>
+            <h2>Michael: Strangers & Freaks</h2>
+            <div id="list-s-m"></div>
         </div>
         <div id="s-trevor" class="content-section">
-            <h2 class="t-border">Trevor: Strangers & Freaks</h2>
-            <p>Target Practice, Fair Game, Grass Roots – Trevor, Exercising Demons – Trevor, Special Bond, Death Wish, Nigel and Mrs. Thornhill, Vinewood Souvenirs (Willie, Tyler, Kerry, Mark, Al Di Napoli, The Last Act), Extra Commission, Closing the Deal, Surreal Estate, Breach of Contract, The Civil Border Patrol, An American Welcome, and Minute Man Blues.</p>
+            <h2>Trevor: Strangers & Freaks</h2>
+            <div id="list-s-t"></div>
         </div>
     </div>
 </div>
 
 <script>
+    const data = {
+        'm-f': ["Franklin and Lamar", "Repossession", "Chop", "The Long Stretch", "Hotel Assassination", "The Multi Target Assassination", "The Vice Assassination", "The Bus Assassination", "The Construction Assassination", "Lamar Down"],
+        'm-m': ["Complications", "Father/Son", "Marriage Counseling", "Daddy's Little Girl", "Friend Request", "Dead Man Walking", "Did Somebody Say Yoga?", "Mr. Richards", "Caida Libre", "Deep Inside", "The Ballad of Rocco", "Cleaning Out the Bureau", "Reuniting the Family", "Meltdown"],
+        'm-t': ["Mr. Philips", "Trevor Philips Industries", "Nervous Ron", "Crystal Maze", "Friends Reunited", "Scouting the Port", "Minor Turbulence", "Predator", "Derailed", "Hang Ten"],
+        'm-h': ["The Jewel Store Job", "Carbine Rifles", "Bugstars Equipment", "BZ Gas Grenades", "Three's Company", "By the Book", "Hood Safari", "The Merryweather Heist", "Minisub", "Cargobob", "Blitz Play", "Trash Truck", "Tow Truck", "Boiler Suits", "Masks", "Getaway Vehicle", "I Fought the Law...", "Eye in the Sky", "Paleto Score Setup", "Military Hardware", "The Paleto Score", "Monkey Business", "Surveying the Score", "Bury the Hatchet", "Pack Man", "Fresh Meat", "Architect's Plans", "Fire Truck", "The Bureau Raid", "Driller", "Sidetracked", "Stingers", "Gauntlet", "The Big Score", "The Wrap Up", "Something Sensible", "The Time's Come", "The Third Way"],
+        's-f': ["Pulling Favors", "Pulling Favors Again", "Pulling Another Favor", "Pulling Favors Favorably", "Pulling One Last Favor", "Shift Work", "Paparazzo", "Paparazzo – The Sex Tape", "Paparazzo – The Partnership", "Paparazzo – The Meltdown", "Paparazzo – The Highness", "Paparazzo – Reality Check", "Starlet in Vinewood", "Grass Roots – Franklin", "Far Out", "The Final Frontier", "Risk Assessment", "Liquidity Risk", "Targeted Risk", "Uncalculated Risk", "The Last One"],
+        's-m': ["Abigail Mathers: Death at Sea", "What Lies Beneath", "Grass Roots – Michael", "Exercising Demons – Michael", "Seeking the Truth", "Accepting the Truth", "Assuming the Truth", "Chasing the Truth", "Bearing the Truth", "Delivering the Truth", "Exercising the Truth", "Unknowing the Truth"],
+        's-t': ["Target Practice", "Fair Game", "Grass Roots – Trevor", "Exercising Demons – Trevor", "Special Bond", "Death Wish", "Nigel and Mrs. Thornhill", "Vinewood Souvenirs – Willie", "Vinewood Souvenirs – Tyler", "Vinewood Souvenirs – Kerry", "Vinewood Souvenirs – Mark", "Vinewood Souvenirs – Al Di Napoli", "Vinewood Souvenirs – The Last Act", "Extra Commission", "Closing the Deal", "Surreal Estate", "Breach of Contract", "The Civil Border Patrol", "An American Welcome", "Minute Man Blues"]
+    };
+
+    function generateLists() {
+        for (const [key, missions] of Object.entries(data)) {
+            const container = document.getElementById(`list-${key.replace('-', '-')}`);
+            if (container) {
+                missions.forEach((mission, index) => {
+                    const id = `${key}-${index}`;
+                    container.innerHTML += `
+                        <div class="checklist-item">
+                            <input type="checkbox" id="${id}">
+                            <label for="${id}">${mission}</label>
+                        </div>`;
+                });
+            }
+        }
+    }
+
     function showCategory(cat) {
-        // Toggle Nav Bar
         document.getElementById('missions-nav').style.display = (cat === 'missions') ? 'flex' : 'none';
         document.getElementById('strangers-nav').style.display = (cat === 'strangers') ? 'flex' : 'none';
-        
-        // Toggle Active Tab Style
         const tabs = document.querySelectorAll('.tab-btn');
         tabs[0].classList.toggle('active', cat === 'missions');
         tabs[1].classList.toggle('active', cat === 'strangers');
-
-        // Show first sub-item of that category
-        if(cat === 'missions') showContent('m-franklin');
-        else showContent('s-franklin');
+        showContent(cat === 'missions' ? 'm-franklin' : 's-franklin');
     }
 
     function showContent(id) {
-        // Hide all sections
-        const sections = document.querySelectorAll('.content-section');
-        sections.forEach(s => s.classList.remove('active'));
-        
-        // Show selected section
+        document.querySelectorAll('.content-section').forEach(s => s.classList.remove('active'));
         document.getElementById(id).classList.add('active');
-
-        // Update sub-button opacity
-        const subBtns = document.querySelectorAll('.sub-btn');
-        subBtns.forEach(b => {
+        document.querySelectorAll('.sub-btn').forEach(b => {
             b.classList.remove('active');
             if(b.getAttribute('onclick').includes(id)) b.classList.add('active');
         });
     }
+
+    generateLists();
 </script>
 
 </body>
