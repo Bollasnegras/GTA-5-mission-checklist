@@ -1,29 +1,52 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>GTA 5 Ultimate Tracker</title>
+  <title>GTA V Ultimate Tracker</title>
 
   <style>
     body {
       margin: 0;
-      background: url('https://i.imgur.com/3ZQ3Z8F.jpg') no-repeat center center fixed;
-      background-size: cover;
-      font-family: Arial;
+      font-family: Arial, sans-serif;
+      background: linear-gradient(135deg, #0a0a0a, #111827, #000000);
       color: white;
     }
 
     .overlay {
-      background: rgba(0,0,0,0.8);
       min-height: 100vh;
       padding: 20px;
+      backdrop-filter: blur(10px);
     }
 
-    h1 { margin: 0 0 10px; }
+    h1 {
+      margin-top: 0;
+      color: #00ff88;
+      text-shadow: 0 0 10px #00ff88;
+    }
 
     h2 {
       border-left: 4px solid #00ff88;
       padding-left: 10px;
       margin-top: 25px;
+      color: #00ffcc;
+    }
+
+    .tabs {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 15px;
+    }
+
+    .tab {
+      padding: 10px 15px;
+      background: rgba(255,255,255,0.05);
+      border-radius: 6px;
+      cursor: pointer;
+      border: 1px solid rgba(0,255,136,0.2);
+    }
+
+    .tab.active {
+      background: rgba(0,255,136,0.2);
+      box-shadow: 0 0 10px rgba(0,255,136,0.4);
     }
 
     .counter {
@@ -34,10 +57,16 @@
 
     .mission {
       display: block;
-      padding: 6px;
-      margin: 2px 0;
+      padding: 8px;
+      margin: 4px 0;
       background: rgba(255,255,255,0.05);
-      border-radius: 4px;
+      border-radius: 6px;
+      border: 1px solid rgba(0,255,136,0.1);
+    }
+
+    .mission:hover {
+      background: rgba(0,255,136,0.15);
+      transform: translateX(5px);
     }
 
     .gold {
@@ -47,12 +76,16 @@
 
     input[type="text"] {
       width: 100%;
-      padding: 10px;
+      padding: 12px;
       margin-bottom: 15px;
-      border-radius: 6px;
+      border-radius: 8px;
       border: none;
       font-size: 16px;
+      background: rgba(255,255,255,0.08);
+      color: white;
     }
+
+    .hidden { display: none; }
   </style>
 </head>
 
@@ -63,51 +96,56 @@
 
 <input type="text" id="search" placeholder="Search missions..." onkeyup="filterMissions()">
 
-<h2>Story Missions</h2>
-<div class="counter" id="storyCounter"></div>
-<div id="storyList"></div>
+<div class="tabs">
+  <div class="tab active" onclick="switchTab('missions')">Missions</div>
+  <div class="tab" onclick="switchTab('sf')">Strangers & Freaks</div>
+</div>
 
-<h2>Strangers & Freaks</h2>
-<div class="counter" id="sfCounter"></div>
-<div id="sfList"></div>
+<div id="missionsTab">
+  <h2>Franklin</h2>
+  <div class="counter" id="fCounter"></div>
+  <div id="fList"></div>
+
+  <h2>Michael</h2>
+  <div class="counter" id="mCounter"></div>
+  <div id="mList"></div>
+
+  <h2>Trevor</h2>
+  <div class="counter" id="tCounter"></div>
+  <div id="tList"></div>
+</div>
+
+<div id="sfTab" class="hidden">
+  <h2>Franklin</h2>
+  <div id="sfFList"></div>
+
+  <h2>Michael</h2>
+  <div id="sfMList"></div>
+
+  <h2>Trevor</h2>
+  <div id="sfTList"></div>
+</div>
 
 </div>
 
 <script>
 window.onload = function () {
 
-const storyMissions = [
-"Prologue","Franklin and Lamar","Repossession","Complications","Father/Son",
-"Marriage Counseling","Chop","Friend Request","The Long Stretch","Casing the Jewel Store",
-"The Jewel Store Job","Mr. Phillips","Trevor Philips Industries","Nervous Ron",
-"Crystal Maze","Friends Reunited","Fame or Shame","Dead Man Walking",
-"Three’s Company","By the Book","Hood Safari","Scouting the Port",
-"Minisub","The Merryweather Heist","Blitz Play","Mr. Richards",
-"I Fought the Law","Eye in the Sky","Caida Libre","Deep Inside",
-"Minor Turbulence","Paleto Score Setup","The Paleto Score","Derailed",
-"Monkey Business","Hang Ten","Surveying the Score","Bury the Hatchet",
-"Pack Man","Fresh Meat","Cleaning Out the Bureau","The Bureau Raid",
-"Reuniting the Family","Architect’s Plans","The Big Score (Subtle)",
-"The Big Score (Obvious)","The Wrap Up","Lamar Down",
-"Ending A","Ending B","Ending C"
-];
+// STORY MISSIONS BY CHARACTER
+const franklin = ["Franklin and Lamar","Repossession","Chop","The Long Stretch","Hood Safari"];
+const michael = ["Marriage Counseling","Friend Request","Casing the Jewel Store","The Jewel Store Job","Dead Man Walking"];
+const trevor = ["Mr. Phillips","Trevor Philips Industries","Nervous Ron","Crystal Maze"];
 
-const sfMissions = [
-"Tonya 1","Tonya 2","Tonya 3","Tonya 4",
-"Beverly 1","Beverly 2","Beverly 3","Beverly 4","Beverly 5",
-"Barry 1","Barry 2","Barry 3","Barry 4",
-"Dom 1","Dom 2","Dom 3","Dom 4",
-"Cletus","Josh","Dreyfuss","Epsilon 1","Epsilon 2",
-"Maude","Nigel","Omega","Abigail"
-];
+// STRANGERS & FREAKS
+const sfFranklin = ["Tonya 1","Tonya 2","Tonya 3","Tonya 4","Beverly 1","Beverly 2"];
+const sfMichael = ["Barry 1","Barry 2","Epsilon 1","Epsilon 2"];
+const sfTrevor = ["Dom 1","Dom 2","Dom 3","Dom 4","Maude","Nigel"];
 
-const storyList = document.getElementById("storyList");
-const sfList = document.getElementById("sfList");
-
-function createList(list, container, prefix) {
+// CREATE LIST FUNCTION
+function createList(list, containerId, prefix) {
+  const container = document.getElementById(containerId);
   list.forEach((name, i) => {
     const id = prefix + i;
-
     container.innerHTML += `
       <label class="mission">
         <input type="checkbox" id="${id}" onchange="saveData()">
@@ -118,25 +156,28 @@ function createList(list, container, prefix) {
   });
 }
 
-createList(storyMissions, storyList, "s");
-createList(sfMissions, sfList, "sf");
+// BUILD LISTS
+createList(franklin, "fList", "f");
+createList(michael, "mList", "m");
+createList(trevor, "tList", "t");
+
+createList(sfFranklin, "sfFList", "sff");
+createList(sfMichael, "sfMList", "sfm");
+createList(sfTrevor, "sfTList", "sft");
 
 const checkboxes = document.querySelectorAll("input[type='checkbox']");
 
+// COUNTERS
 function updateCounters() {
-  const storyBoxes = [...checkboxes].filter(cb => cb.id.startsWith("s") && !cb.id.includes("gold"));
-  const sfBoxes = [...checkboxes].filter(cb => cb.id.startsWith("sf") && !cb.id.includes("gold"));
+  const count = (prefix) =>
+    [...checkboxes].filter(cb => cb.id.startsWith(prefix) && !cb.id.includes("gold") && cb.checked).length;
 
-  const storyDone = storyBoxes.filter(cb => cb.checked).length;
-  const sfDone = sfBoxes.filter(cb => cb.checked).length;
-
-  document.getElementById("storyCounter").textContent =
-    `Story Missions: ${storyDone} / ${storyBoxes.length}`;
-
-  document.getElementById("sfCounter").textContent =
-    `Strangers & Freaks: ${sfDone} / ${sfBoxes.length}`;
+  document.getElementById("fCounter").textContent = `Completed: ${count("f")}`;
+  document.getElementById("mCounter").textContent = `Completed: ${count("m")}`;
+  document.getElementById("tCounter").textContent = `Completed: ${count("t")}`;
 }
 
+// SAVE / LOAD
 function saveData() {
   const data = {};
   checkboxes.forEach(cb => data[cb.id] = cb.checked);
@@ -155,15 +196,21 @@ function loadData() {
   updateCounters();
 }
 
+// SEARCH
 window.filterMissions = function () {
   const search = document.getElementById("search").value.toLowerCase();
-  const missions = document.querySelectorAll(".mission");
-
-  missions.forEach(m => {
-    m.style.display = m.textContent.toLowerCase().includes(search)
-      ? "block"
-      : "none";
+  document.querySelectorAll(".mission").forEach(m => {
+    m.style.display = m.textContent.toLowerCase().includes(search) ? "block" : "none";
   });
+};
+
+// TABS
+window.switchTab = function(tab) {
+  document.getElementById("missionsTab").classList.toggle("hidden", tab !== "missions");
+  document.getElementById("sfTab").classList.toggle("hidden", tab !== "sf");
+
+  document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
+  event.target.classList.add("active");
 };
 
 loadData();
