@@ -97,33 +97,18 @@
 <input type="text" id="search" placeholder="Search missions..." onkeyup="filterMissions()">
 
 <div class="tabs">
-  <div class="tab active" onclick="switchTab('missions')">Missions</div>
-  <div class="tab" onclick="switchTab('sf')">Strangers & Freaks</div>
+  <div class="tab active" onclick="switchTab('missions', event)">Missions</div>
+  <div class="tab" onclick="switchTab('sf', event)">Strangers & Freaks</div>
 </div>
 
 <div id="missionsTab">
-  <h2>Franklin</h2>
-  <div class="counter" id="fCounter"></div>
-  <div id="fList"></div>
-
-  <h2>Michael</h2>
-  <div class="counter" id="mCounter"></div>
-  <div id="mList"></div>
-
-  <h2>Trevor</h2>
-  <div class="counter" id="tCounter"></div>
-  <div id="tList"></div>
+  <div class="counter" id="storyCounter"></div>
+  <div id="storyList"></div>
 </div>
 
 <div id="sfTab" class="hidden">
-  <h2>Franklin</h2>
-  <div id="sfFList"></div>
-
-  <h2>Michael</h2>
-  <div id="sfMList"></div>
-
-  <h2>Trevor</h2>
-  <div id="sfTList"></div>
+  <div class="counter" id="sfCounter"></div>
+  <div id="sfList"></div>
 </div>
 
 </div>
@@ -131,17 +116,38 @@
 <script>
 window.onload = function () {
 
-// STORY MISSIONS BY CHARACTER
-const franklin = ["Franklin and Lamar","Repossession","Chop","The Long Stretch","Hood Safari"];
-const michael = ["Marriage Counseling","Friend Request","Casing the Jewel Store","The Jewel Store Job","Dead Man Walking"];
-const trevor = ["Mr. Phillips","Trevor Philips Industries","Nervous Ron","Crystal Maze"];
+// FULL STORY MISSIONS
+const storyMissions = [
+"Prologue","Franklin and Lamar","Repossession","Complications","Father/Son",
+"Marriage Counseling","Chop","Friend Request","The Long Stretch",
+"Casing the Jewel Store","The Jewel Store Job","Mr. Phillips",
+"Trevor Philips Industries","Nervous Ron","Crystal Maze","Friends Reunited",
+"Fame or Shame","Dead Man Walking","Three’s Company","By the Book",
+"Hood Safari","Scouting the Port","Minisub","The Merryweather Heist",
+"Did Somebody Say Yoga?","Hotel Assassination","Blitz Play","Mr. Richards",
+"I Fought the Law","Eye in the Sky","Caida Libre","Deep Inside",
+"Minor Turbulence","Paleto Score Setup","The Paleto Score","Derailed",
+"Monkey Business","Hang Ten","Surveying the Score","Bury the Hatchet",
+"Pack Man","Fresh Meat","Cleaning Out the Bureau","The Bureau Raid",
+"Reuniting the Family","Architect’s Plans","The Big Score (Subtle)",
+"The Big Score (Obvious)","The Wrap Up","Lamar Down",
+"Meltdown","The Time's Come","Something Sensible","The Third Way"
+];
 
-// STRANGERS & FREAKS
-const sfFranklin = ["Tonya 1","Tonya 2","Tonya 3","Tonya 4","Beverly 1","Beverly 2"];
-const sfMichael = ["Barry 1","Barry 2","Epsilon 1","Epsilon 2"];
-const sfTrevor = ["Dom 1","Dom 2","Dom 3","Dom 4","Maude","Nigel"];
+// FULL STRANGERS & FREAKS
+const sfMissions = [
+"Tonya - Pulling Favors","Tonya - Another Favor","Tonya - Still Pulling","Tonya - Final Favor",
+"Beverly - Paparazzo","Beverly - Sex Tape","Beverly - Partnership","Beverly - Reality Check","Beverly - Meltdown",
+"Barry - Grass Roots (Michael)","Barry - Grass Roots (Trevor)","Barry - Grass Roots (Franklin)",
+"Dom - Risk Assessment","Dom - Liquidity Risk","Dom - Targeted Risk","Dom - Uncalculated Risk",
+"Cletus - Target Practice","Cletus - Fair Game",
+"Josh - Extra Commission","Josh - Closing the Deal","Josh - Surreal Estate",
+"Dreyfuss - A Starlet in Vinewood",
+"Epsilon - Seeking the Truth","Epsilon - Accepting the Truth","Epsilon - Assuming the Truth",
+"Maude - Bail Bonds","Nigel & Mrs Thornhill","Omega - Far Out","Abigail - Death at Sea"
+];
 
-// CREATE LIST FUNCTION
+// CREATE LIST
 function createList(list, containerId, prefix) {
   const container = document.getElementById(containerId);
   list.forEach((name, i) => {
@@ -157,24 +163,21 @@ function createList(list, containerId, prefix) {
 }
 
 // BUILD LISTS
-createList(franklin, "fList", "f");
-createList(michael, "mList", "m");
-createList(trevor, "tList", "t");
-
-createList(sfFranklin, "sfFList", "sff");
-createList(sfMichael, "sfMList", "sfm");
-createList(sfTrevor, "sfTList", "sft");
+createList(storyMissions, "storyList", "s");
+createList(sfMissions, "sfList", "sf");
 
 const checkboxes = document.querySelectorAll("input[type='checkbox']");
 
 // COUNTERS
 function updateCounters() {
-  const count = (prefix) =>
-    [...checkboxes].filter(cb => cb.id.startsWith(prefix) && !cb.id.includes("gold") && cb.checked).length;
+  const storyBoxes = [...checkboxes].filter(cb => cb.id.startsWith("s") && !cb.id.includes("gold"));
+  const sfBoxes = [...checkboxes].filter(cb => cb.id.startsWith("sf") && !cb.id.includes("gold"));
 
-  document.getElementById("fCounter").textContent = `Completed: ${count("f")}`;
-  document.getElementById("mCounter").textContent = `Completed: ${count("m")}`;
-  document.getElementById("tCounter").textContent = `Completed: ${count("t")}`;
+  document.getElementById("storyCounter").textContent =
+    `Story Missions: ${storyBoxes.filter(cb => cb.checked).length} / ${storyBoxes.length}`;
+
+  document.getElementById("sfCounter").textContent =
+    `Strangers & Freaks: ${sfBoxes.filter(cb => cb.checked).length} / ${sfBoxes.length}`;
 }
 
 // SAVE / LOAD
@@ -205,12 +208,12 @@ window.filterMissions = function () {
 };
 
 // TABS
-window.switchTab = function(tab) {
+window.switchTab = function(tab, e) {
   document.getElementById("missionsTab").classList.toggle("hidden", tab !== "missions");
   document.getElementById("sfTab").classList.toggle("hidden", tab !== "sf");
 
   document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
-  event.target.classList.add("active");
+  e.target.classList.add("active");
 };
 
 loadData();
